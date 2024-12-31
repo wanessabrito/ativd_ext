@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento e Mitigação da Poluição Atmosférica em Goiânia</title>
+
+    <!-- font awesome cdn link  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="src/style/style.css">
+    <link rel="stylesheet" href="src/style/reset.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+    <script>
+        // Função para criar um gráfico com dados diferentes
+        function createChart(ctx, data, chartType) {
+            return new Chart(ctx, {
+                type: chartType, // Tipo de gráfico (ex: 'bar', 'line', 'pie', etc.)
+                data: {
+                    labels: ['AQI', 'PM2.5', 'CO'], // Rótulos
+                    datasets: [{
+                        label: 'Qualidade do Ar',
+                        data: [data.aqi, data.pm25, data.co], // Dados do gráfico
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.6)', // Cor do gráfico
+                            'rgba(255, 206, 86, 0.6)', 
+                            'rgba(75, 192, 192, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)', 
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: chartType !== 'pie' && chartType !== 'doughnut' ? { beginAtZero: true } : undefined
+                    }
+                }
+            });
+        }
+
+        // Função para carregar os dados da API
+        async function fetchData() {
+            try {
+                const response = await fetch('api.php');
+                const data = await response.json();
+                if (data.error) {
+                    alert("Erro: " + data.error);
+                    return null;
+                }
+                return data;
+            } catch (error) {
+                console.error('Erro ao carregar os dados:', error);
+                alert("Erro ao carregar os dados: " + error.message);
+                return null;
+            }
+        }
+
+        // Função para inicializar todos os gráficos
+        async function initCharts() {
+            const data = await fetchData();
+            if (!data) return;
+
+            // Criação dos gráficos
+            const ctx1 = document.getElementById('airQualityChart1').getContext('2d');
+            const ctx2 = document.getElementById('airQualityChart2').getContext('2d');
+            const ctx3 = document.getElementById('airQualityChart3').getContext('2d');
+
+            // Criação de diferentes tipos de gráficos
+            createChart(ctx1, data, 'bar');  // Gráfico de Barra
+            createChart(ctx2, data, 'line'); // Gráfico de Linha
+            createChart(ctx3, data, 'pie');  // Gráfico de Pizza
+        }
+
+        // Inicializa os gráficos
+        initCharts();
+    </script>
+<!-- header section starts  -->
+
+<header>
+
+<a href="#" class="logo"><i class="fas fa-seedling"></i>MundoVerde</a>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="#home">home</a></li>
+        <li><a href="#about">Poluição</a></li>
+        <li><a href="#saude">Saúde</a></li>
+        <li><a href="#service">Soluções Sustentáveis</a></li>
+        <li><a href="#project">ONGs</a></li>
+        <li><a href="#donate">Contato</a></li>
+        <li><a href="#post">Posts</a></li>
+    </ul>
+</nav>
+
+<div class="fas fa-bars"></div>
+
+</header>
+
+<!-- header section ends -->
+
+<!-- home section starts  -->
+
+<section class="home" id="home">
+
+<div class="content">
+
+    <h1>Ar Limpo Goiânia</h1>
+    <p>Informações em tempo real sobre a qualidade do ar, educação ambiental e ações práticas para combater a poluição na nossa cidade</p>
+    <a href="#"><button class="btn">explore.</button></a>
+
+</div>
+
+</section>
+
+<!-- home section ends -->
+
+<!-- about section starts  -->
+
+<section class="about" id="about">
+
+<h1 class="heading"> <i class="fas fa-quote-left"></i> Dados de Poluição <i class="fas fa-quote-right"></i> </h1>
+
+<div class="row">
+
+    <div class="image">
+        <img src="https://img.freepik.com/free-vector/hand-drawn-environmental-pollution-illustration_23-2150364043.jpg?t=st=1735606886~exp=1735610486~hmac=1683f29ed04986e90a1cd91d015b116de890616c52c29b60684ca8bc34dcc219&w=740" alt="Imagem de Poluição">
+    </div>
+
+    <div class="content2">
+        <h3>Níveis de Poluição em Goiânia</h3>
+        
+        <p>Os níveis de poluição do ar em Goiânia são influenciados por queimadas, indústrias e trânsito. Dados de estações de monitoramento mostram os poluentes presentes, como partículas finas (PM2.5) e dióxido de carbono (CO2), ajudando a compreender os riscos à saúde e o impacto no meio ambiente.</p>
+
+        <p>Abaixo, apresentamos gráficos interativos que mostram os níveis de poluição do ar em Goiânia. Explore as informações para entender melhor como diferentes fatores estão impactando a qualidade do ar na cidade.</p>
+        <a href="#"><button class="btn">home</button></a>
+    </div>
+
+</div>
+
+<div class="box-container">
+
+    <div class="box">
+        <canvas id="airQualityChart1" width="400" height="200"></canvas>
+    </div>
+
+    <div class="box">
+        <canvas id="airQualityChart2" width="400" height="200"></canvas>
+    </div>
+
+    <div class="box">
+        <canvas id="airQualityChart3" width="400" height="200"></canvas>
+    </div>
+
+</div>
+
+<div class="wave-container">
+    <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+        <path 
+            fill="#a3a825" 
+            fill-opacity="1" 
+            d="M0,160L60,176C120,192,240,224,360,240C480,256,600,256,720,224C840,192,960,128,1080,112C1200,96,1320,128,1380,144L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z">
+        </path>
+    </svg>
+</div>"
+
+
+</section>
+<section class="about" id="saude">
+
+    <h1 class="heading"> <i class="fas fa-quote-left"></i>Riscos da Poluição do Ar<i class="fas fa-quote-right"></i> </h1>
+
+    <div class="row">
+
+        <div class="content2">
+            <h3>Educação e Riscos da Poluição do Ar</h3>
+            <p>A poluição do ar representa um risco significativo à saúde, impactando especialmente crianças, idosos e pessoas com condições respiratórias pré-existentes. Com a crescente urbanização e a atividade industrial, a qualidade do ar em muitas cidades tem sido comprometida, gerando sérios desafios para a saúde pública.</p>
+
+           <p>Os poluentes atmosféricos, como partículas finas (PM2.5) e gases tóxicos, podem causar diversos            problemas respiratórios e cardiovasculares. Esses efeitos são ainda mais graves para grupos            vulneráveis, tornando fundamental a conscientização sobre os riscos associados à exposição à poluição.           </p>
+
+           <p>Adotar hábitos saudáveis, como evitar áreas com alta poluição, usar máscaras protetoras e promover            o transporte sustentável, são medidas simples que podem reduzir os impactos da poluição no nosso            bem-estar. Conhecer essas informações é o primeiro passo para proteger a saúde e contribuir para a            melhoria da qualidade do ar.</p>    
+            <a href="#"><button class="btn">home</button></a>
+        </div>
+
+        <div class="image">
+            <img src="https://img.freepik.com/free-vector/pollution-concept-background-flat-style_23-2148215106.jpg?t=st=1735604982~exp=1735608582~hmac=41196432058926b260fbbccb47b9a2f44cd6dc7d0591bc1a4e34e829e681eea2&w=740">
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="service" id="service">
+
+    <h1 class="heading"> <i class="fas fa-quote-left"></i>Soluções Sustentáveis<i class="fas fa-quote-right"></i> </h1>
+
+    <div class="box-container">
+
+        <div class="box">
+            <i class="fas fa-seedling"></i>
+            <h3>Plantio de Árvores</h3>
+            <p>O plantio de árvores ajuda a melhorar a qualidade do ar e a reduzir a emissão de gases poluentes.</p>
+            <a href="https://www.gov.br/ibama/pt-br">Leia mais &gt;&gt;</a>
+        </div>
+
+        <div class="box">
+            <i class="fas fa-recycle"></i>
+            <h3>Reciclagem</h3>
+            <p>A reciclagem é uma prática essencial para reduzir o desperdício e economizar recursos naturais.</p>
+            <a href="https://www.gov.br/ibama/pt-br">Leia mais &gt;&gt;</a>
+        </div>
+
+        <div class="box">
+            <i class="fas fa-hand-holding-water"></i>
+            <h3>Economia de Água</h3>
+            <p>Adotar práticas para economizar água é fundamental para preservar este recurso precioso.</p>
+            <a href="https://www.gov.br/ibama/pt-br">Leia mais &gt;&gt;</a>
+        </div>
+
+        <div class="box">
+            <i class="fas fa-tree"></i>
+            <h3>Proteção das Árvores</h3>
+            <p>Proteger as árvores e áreas verdes é essencial para manter o equilíbrio ecológico e a qualidade do ar.</p>
+            <a href="https://www.gov.br/ibama/pt-br">Leia mais &gt;&gt;</a>
+        </div>
+
+        <div class="box">
+            <i class="fas fa-paw"></i>
+            <h3>Proteção dos Animais</h3>
+            <p>Preservar a fauna é fundamental para manter a biodiversidade e equilibrar os ecossistemas naturais.</p>
+            <a href="https://www.gov.br/ibama/pt-br">Leia mais &gt;&gt;</a>
+        </div>
+
+        <div class="box">
+            <i class="fas fa-solar-panel"></i>
+            <h3>Painéis Solares</h3>
+            <p>O uso de painéis solares é uma solução sustentável para gerar energia limpa e reduzir a dependência de fontes poluentes.</p>
+            <a href="https://www.gov.br/ibama/pt-br">Leia mais &gt;&gt;</a>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- service section ends -->
+
+<!-- project section starts  -->
+
+<section class="project" id="project">
+
+<h1 class="heading"> <i class="fas fa-quote-left"></i>Cuidando do Planeta: Conheça as ONGs que Fazem a Diferença<i class="fas fa-quote-right"></i> </h1>
+
+<div class="box-container">
+
+    <div class="box">
+        <img src="https://cosmeticinnovation.com.br/wp-content/uploads/2022/09/SOS_WELWDA.jpg" alt="SOS Mata Atlântica">
+        <div class="icons">
+            <a style="--i:1;" href="#" class="fas fa-heart"></a>
+            <a style="--i:2;" href="https://sosma.org.br/sobre/quem-somos" class="fas fa-share"></a>
+            <a style="--i:3;" href="#" class="fas fa-comment"></a>
+        </div>
+    </div>
+
+    <div class="box">
+        <img src="https://www.greenpeace.org/static/planet4-brasil-stateless/2022/12/39f79e3d-thumb-logo-default.jpg" alt="greenpeace brasil">
+        <div class="icons">
+            <a style="--i:1;" href="#" class="fas fa-heart"></a>
+            <a style="--i:2;" href="https://www.greenpeace.org/brasil/" class="fas fa-share"></a>
+            <a style="--i:3;" href="#" class="fas fa-comment"></a>
+        </div>
+    </div>
+
+    <div class="box">
+        <img src="https://semeia.org.br/wp-content/uploads/2023/02/Design-sem-nome-1.png" alt="Instituto Chico Mendes de Conservação da Biodiversidade (ICMBio)">
+        <div class="icons">
+            <a style="--i:1;" href="#" class="fas fa-heart"></a>
+            <a style="--i:2;" href="https://www.gov.br/icmbio/pt-br" class="fas fa-share"></a>
+            <a style="--i:3;" href="#" class="fas fa-comment"></a>
+        </div>
+    </div>
+
+    <div class="box">
+        <img src="https://d1diae5goewto1.cloudfront.net/img/wwf-logo/footer/portugal/logo-wwf-anp.jpg" alt=" WWF Brasil">
+        <div class="icons">
+            <a style="--i:1;" href="#" class="fas fa-heart"></a>
+            <a style="--i:2;" href="https://www.wwf.org.br/" class="fas fa-share"></a>
+            <a style="--i:3;" href="#" class="fas fa-comment"></a>
+        </div>
+    </div>
+
+    <div class="box">
+        <img src="https://media.eco21.eco.br/2022/07/fe9097f2-conserv.jpg" alt="Instituto de Pesquisa Ambiental da Amazônia (IPAM)">
+        <div class="icons">
+            <a style="--i:1;" href="#" class="fas fa-heart"></a>
+            <a style="--i:2;" href="https://ipam.org.br/pt/" class="fas fa-share"></a>
+            <a style="--i:3;" href="#" class="fas fa-comment"></a>
+        </div>
+    </div>
+
+    <div class="box">
+        <img src="https://www.socioambiental.org/sites/default/files/styles/large/public/2024-03/04%20Banner%20Site%20ISA%201360x600%20-%202.png?itok=K9vhqx6A" alt="Instituto Socioambiental (ISA)">
+        <div class="icons">
+            <a style="--i:1;" href="#" class="fas fa-heart"></a>
+            <a style="--i:2;" href="https://www.socioambiental.org/" class="fas fa-share"></a>
+            <a style="--i:3;" href="#" class="fas fa-comment"></a>
+        </div>
+    </div>
+
+</div>
+
+</section>
+
+<!-- project section ends -->
+
+<!-- donate section starts  -->
+
+<section class="donate" id="donate">
+
+<h1 class="heading"> <i class="fas fa-quote-left"></i>Entre em Contato<i class="fas fa-quote-right"></i> </h1>
+
+<div class="image-container">
+    <img src="src/assets/img/forest-6874717_1280.jpg" alt="Imagem de fundo">
+</div>
+
+<div class="form-container">
+    <form id="contactForm" method="POST">
+        <div class="inputBox">
+            <input type="text" name="nome" placeholder="Nome" required>
+            <input type="text" name="sobrenome" placeholder="Sobrenome" required>
+        </div>
+
+        <div class="inputBox">
+            <input type="email" name="email" placeholder="E-mail" required>
+        </div>
+
+        <textarea name="mensagem" placeholder="Mensagem (opcional)"></textarea>
+
+        <input type="submit" class="btn" value="Enviar">
+    </form>
+
+    <!-- Espaço para exibir a resposta (sucesso ou erro) -->
+    <div id="response"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="form-handler.js"></script>
+
+
+</section>
+
+<!-- donate section ends -->
+
+<!-- post section starts  -->
+
+<section class="post" id="post">
+
+<h1 class="heading"> <i class="fas fa-quote-left"></i>Posts Recentes sobre o Meio Ambiente em Goiânia<i class="fas fa-quote-right"></i> </h1>
+
+<div class="box-container">
+
+    <div class="box">
+        <img src="https://goias.gov.br/wp-content/uploads/2024/12/CEASA-USINA-FOTOVOLTAICA2-1024x668.jpeg" alt="">
+        <div class="content">
+            <span> <i class="fas fa-calendar"></i> 6 dez, 2024 </span>
+            <h3>Ceasa é a 1ª central de abastecimento do país com energia solar</h3>
+            <p>Em um importante passo rumo à eficiência energética sustentável, o governador Ronaldo Caiado inaugurou, nesta sexta-feira (06/12), a usina fotovoltaica das Centrais de Abastecimentos de Goiás.</p>
+            <a href="https://goias.gov.br/ceasa-e-a-1a-central-de-abastecimento-do-pais-com-energia-solar/"><button class="btn">Saiba mais</button></a>
+        </div>
+    </div>
+
+    <div class="box">
+        <img src="https://goias.gov.br/wp-content/uploads/2024/12/Semad-lanca-mapeamento-detalhado-de-Cerrado-para-grandes-areas-3.jpeg" alt="">
+        <div class="content">
+            <span> <i class="fas fa-calendar"></i> 6 dez, 2024 </span>
+            <h3>Semad lança mapeamento detalhado de Cerrado</h3>
+            <p>A Secretaria de Meio Ambiente e Desenvolvimento Sustentável (Semad) dá início, na próxima terça-feira (10/12), à entrega de um detalhado mapeamento de remanescentes de Cerrado..</p>
+            <a href="https://goias.gov.br/semad-lanca-mapeamento-detalhado-de-cerrado-para-grandes-areas/"><button class="btn">Saiba mais</button></a>
+        </div>
+    </div>
+
+    <div class="box">
+        <img src="https://goias.gov.br/wp-content/uploads/2023/01/SANEAGO-NOVA-LOGO-c62.jpg" alt="Saneago investe quase R$ 600 milhões nos primeiros nove meses de 2024">
+        <div class="content">
+            <span> <i class="fas fa-calendar"></i> 8 nov, 2024 </span>
+            <h3>Saneago investe quase R$ 600 milhões nos primeiros nove meses de 2024</h3>
+            <p>O investimento da Saneago nos nove primeiros meses de 2024 foi de R$ 499,8 milhões, 38,96% maior que no mesmo período de 2023. Considerando também as parcerias estratégicas..</p>
+            <a href="https://goias.gov.br/saneago-investe-quase-r-600-milhoes-nos-primeiros-nove-meses-de-2024/"><button class="btn">Saiba mais</button></a>
+        </div>
+    </div>
+
+</div>
+
+</section>
+
+<!-- post section ends -->
+
+<!-- footer section starts  -->
+
+<section class="footer">
+
+<div class="box-container">
+
+    <div class="box">
+        <a href="#" class="logo"><i class="fas fa-seedling"></i>MundoVerde</a>
+        <p>Cuidar do meio ambiente é essencial para garantir um futuro sustentável. Pequenas ações, como reduzir o uso de plásticos,fazem uma grande diferença para a saúde do planeta e das futuras gerações.</p>
+    </div>
+
+    <div class="box">
+        <h3 class="share">Redes Sociais</h3>
+        <a href="https://www.facebook.com/ibama.gov.br/">facebook</a>
+        <a href="https://x.com/ibamagov">twitter</a>
+        <a href="https://www.instagram.com/ibamagov/?hl=en">instagram</a>
+        <a href="https://github.com/wanessabrito">github</a>
+    </div>
+
+
+</div>
+
+</section>
+
+<!-- footer section ends -->
+
+
+<!-- custom js file link  -->
+<script src="src/scripts/main.js"></script>
+</body>
+</html>
